@@ -179,8 +179,7 @@ _Default prefix :_ #
 |     !contact   |     OK      |             Send owner contact            |
 |     !resi      |     OK      |             Get a your package info       |
 |     !reminder  |     OK      |             Send a reminder for you       |
-|     !music     |     OK      |             Get music from given title via Voice from Youtube              | 
-|     !musicyt   |     OK      |     Get music from link via Voice from Youtube      |
+|     !music     |     OK      |             Get music from given title or youtube link via Voice from Youtube              | 
 |     !infohoax  |     OK      |     Get newest infohoax page             |
 |     !ping      |     OK      |     Check bot ping                       |
 |     !profil    |     OK      |     See your profile                     |
@@ -205,7 +204,7 @@ _Default prefix :_ #
 | !kusonime     |     OK      |     Get anime details from kusonime                  |
 | !traceanime   |     OK      |     Get an anime title from given screenshot image   |
 | !sauce        |     OK      |     Get an source link from given artwork image      |
-| !waifu        |     OK      |     Get waifu image                                  |
+| !waifu (help) |     OK      |     Get waifu random image or list waifu command     |
 | !animesticker |     OK      |     Get anime sticker                                |
 
 [Read all commands here!](https://github.com/IniGisah/WhatsApp-Bot/blob/master/lib/text/text_id.js)

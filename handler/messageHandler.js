@@ -739,7 +739,7 @@ module.exports = async (client, message) => {
       case 'musik':
       case 'music':
         await client.reply(from, "Fitur ini memerlukan resource yang berat, dimohon untuk tidak menspam command ini", id);
-        if (arguments.length < 1) return await client.reply(from, `_⚠️ Contoh Penggunaan Perintah : ${botPrefix}music <title>_`, id);
+        if (arguments.length < 1) return await client.reply(from, `_⚠️ Contoh Penggunaan Perintah : ${botPrefix}music <title> / <url>_`, id);
         //if (ytwait == true) return await client.reply(from, '_⚠️ Mohon menunggu command music sebelumnya selesai diupload terlebih dahulu_', id);
         const musicLink = await _function.youtube.youtubeMusic(arguments.join(' '));
         if (!musicLink) return await client.reply(from, '_⚠️ Pastikan music yang anda inginkan dibawah 5 menit!_', id);
@@ -749,44 +749,17 @@ module.exports = async (client, message) => {
           if (musicLink.error == true){
             await client.reply(from, `⚠️ Error !\nPastikan music yang anda inginkan dibawah 5 menit!\n\nMessage error : \n${musicLink.message}`, id);
           } else {
-            const mp3url = musicLink.file;
-            const judul = musicLink.title;
-            const durasi = musicLink.duration;
+            const mp3url = musicLink.result.file;
+            const judul = musicLink.result.title;
+            const altjudul = musicLink.result.alt_title;
+            const durasi = musicLink.result.duration;
+            const thumb = musicLink.thumbnail;
 
             var menit = Math.floor(durasi / 60);
             var detik = durasi - menit * 60;
-            const caption = `----Detail musik----\n\nJudul : ${judul}\nDurasi : ${menit} menit ${detik} detik`
+            const caption = `-------[*Detail musik*]-------\n\nJudul : ${judul}\nJudul Alternatif : ${altjudul}\nDurasi : ${menit} menit ${detik} detik`
 
-            await client.reply(from, caption, id)
-            await client.sendFileFromUrl(from, mp3url, "mp3yt.mp3", judul, id, null, null, true);
-            //ytwait = false;
-          }
-        } catch (error) {
-          await client.reply(from, "Sepertinya musik tidak bisa di upload, mon maap 🙏\n\nSilahkan cari musik lainnya", id);
-          //console.log("music download error " + musicLink);
-          console.log(error.stack);
-        }
-        break;
-
-      case 'musicyt':
-        await client.reply(from, "Fitur ini memerlukan resource yang berat, dimohon untuk tidak menspam command ini", id);
-        if (arguments.length < 1) return await client.reply(from, `_⚠️ Contoh Penggunaan Perintah : ${botPrefix}musicyt <url>_`, id);
-        const musicmp3 = await _function.youtube.youtubeMusicURL(arguments[0]);
-        try {
-          //ytwait = true;
-
-          if (musicmp3.error == true){
-            await client.reply(from, `⚠️ Error !\nPastikan music yang anda inginkan dibawah 5 menit!\n\nMessage error : \n${musicmp3.message}`, id);
-          } else {
-            const mp3url = musicmp3.file;
-            const judul = musicmp3.title;
-            const durasi = musicmp3.duration;
-            
-            var menitu = Math.floor(durasi / 60);
-            var detiku = durasi - menitu * 60;
-            const caption = `----Detail musik----\n\nJudul : ${judul}\nDurasi : ${menitu} menit ${detiku} detik`
-
-            await client.reply(from, caption, id)
+            await client.sendImage(from, thumb, "thumb.jpg", caption, id)
             await client.sendFileFromUrl(from, mp3url, "mp3yt.mp3", judul, id, null, null, true);
             //ytwait = false;
           }
@@ -939,7 +912,8 @@ Arip @6282299922988
 Hadid @6281329989383 
 Willy @6282112378872 
 Wahuy @6281413543830
-Nopal @6289638065793`;
+Nopal @6289638065793
+Murise @6281511529199`;
         await client.sendTextWithMentions(from, gta);
         break;
 
@@ -984,7 +958,8 @@ Aufa @6285893440925
 Nopal @6289638065793⁩
 Junas @628978113198
 Barra @6281388088047
-Wahyu @6281413543830`
+Wahyu @6281413543830
+Dito @6285155277438⁩`
         await client.sendTextWithMentions(from, mc);
         break;
 
@@ -1100,6 +1075,10 @@ Wahyu @6281413543830`
       
       case 'sange':
         await client.sendFile(from, './mediapreload/sange.mp3', "halo.mp3", "Haloo", null, null, true);
+        break;
+
+      case 'failed':
+        await client.sendFile(from, './mediapreload/failed.mp3', "halo.mp3", "Haloo", null, null, true);
         break;
 
       case 'resi':
@@ -1611,20 +1590,35 @@ Usage: *${botPrefix}reminder* 10s | pesan_pengingat
       case 'waifu':
         const modes = ['sfw', 'nsfw']
         const categories = ['waifu', 'neko', 'shinobu', 'megumin', 'bully', 'cuddle', 'cry', 'hug', 'awoo', 'kiss', 'lick', 'pat', 'smug', 'bonk', 'yeet', 'blush', 'smile', 'wave', 'highfive', 'handhold', 'nom', 'bite', 'glomp', 'kill', 'slap', 'happy', 'wink', 'poke', 'dance', 'cringe', 'blush', 'trap', 'blowjob']
+        const categoriesnsfw = ['waifu', 'neko', 'trap', 'blowjob']
         var mode,cat;
         const random = Math.floor(Math.random() * categories.length);
-        if (arguments.length !== 2) return await client.reply(from, ind.waifu(), id)
-        if (!modes.includes(arguments[0])) return client.sendText(from, `Maaf, mode pencarian yang anda pilih tidak ada, mohon cek ${prefix}waifu untuk bantuan`)
-        if (!categories.includes(arguments[1])) return client.sendText(from, `Maaf, kategori pencarian yang anda pilih tidak ada, mohon cek ${prefix}waifu untuk bantuan`)
+        const randomnsfw = Math.floor(Math.random() * categoriesnsfw.length);
+        //if (arguments.length !== 2) return await client.reply(from, ind.waifu(), id)
+        //if (!modes.includes(arguments[0])) return client.sendText(from, `Maaf, mode pencarian yang anda pilih tidak ada, mohon cek ${prefix}waifu untuk bantuan`)
+        //if (!categories.includes(arguments[1])) return client.sendText(from, `Maaf, kategori pencarian yang anda pilih tidak ada, mohon cek ${prefix}waifu untuk bantuan`)
         if (modes.includes(arguments[0]) && categories.includes(arguments[1])) {client.reply(from, ind.wait() + `\n\n_Mendapatkan gambar ${arguments[0]} dengan kategori ${arguments[1]}..._`, id)}
         if (arguments[0] === 'nsfw'){ var i = true } else { var i = false }
-        if (arguments[0] === 'random'){ 
+        if (arguments.length == 0){ 
+          client.reply(from, ind.wait() + `\n\n_Mendapatkan gambar random..._`, id)
           mode = "sfw"
           cat = categories[random]
         } else {
           mode = arguments[0]
           cat = arguments[1]
         }
+        if (arguments.length == 1){
+          if (arguments[0] === 'sfw'){
+            client.reply(from, ind.wait() + `\n\n_Mendapatkan gambar sfw random..._`, id)
+            mode = "sfw"
+            cat = categories[random]
+          } else if (arguments[0] === 'nsfw'){ 
+            var i = true 
+            mode = 'nsfw'
+            cat = categories[randomnsfw]
+          }
+        }
+        if (arguments[0] === 'help' && arguments.length == 1) return await client.reply(from, ind.waifu(), id)
         _function.weeaboo.waifu(mode, cat)
           .then(async ({ url }) => {
             console.log('Waifu image received!')
@@ -1636,19 +1630,19 @@ Usage: *${botPrefix}reminder* 10s | pesan_pengingat
           })
             .catch(async (err) => {
               console.error(err)
-              await client.reply(from, 'Error!', id)
+              await client.reply(from, `Error!\nCoba lagi atau Lihat command ${botPrefix}waifu help`, id)
             })
         break
 
       default:
         client.reply(from, `Salah command, mohon cek ${botPrefix}menu untuk daftar command`, id)
-        return console.debug(color('red', '➜'), color('yellow', isGroup ? '[GROUP]' : '[PERSONAL]'), `!${command} | ${sender.id} ${isGroup ? 'FROM ' + formattedTitle : ''}`, color('yellow', moment().format()));
+        return console.debug(color('red', '➜'), color('yellow', isGroup ? '[GROUP]' : '[PERSONAL]'), `${botPrefix}${command} | ${sender.id} ${isGroup ? 'FROM ' + formattedTitle : ''}`, color('yellow', moment().format()));
     }
 
     return;
   } catch (err) {
     client.sendText(from, 'Syid, Client error!\n\nTolong hubungi owner beserta error log')
-    client.sendText(from, `error log\n\n ${err}`)
+    client.sendText(from, `error log\n\n${err}`)
     console.log(err);
   }
 };
