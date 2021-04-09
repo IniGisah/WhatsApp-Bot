@@ -776,18 +776,18 @@ module.exports = async (client, message) => {
         await client.reply(from, "Fitur ini memerlukan resource yang berat, dimohon untuk tidak menspam command ini", id);
         if (arguments.length < 1) return await client.reply(from, `_⚠️ Contoh Penggunaan Perintah : ${botPrefix}ytmp4 <title> / <url>_`, id);
         if (ytwait == true) return await client.reply(from, '_⚠️ Mohon menunggu command music/video sebelumnya selesai diupload terlebih dahulu_', id);
-        const musicLink = await _function.youtube.youtubeVideo(arguments.join(' '));
-        if (!musicLink) return await client.reply(from, '_⚠️ Pastikan video yang anda inginkan dibawah 5 menit!_', id);
+        const videoLink = await _function.youtube.youtubeVideo(arguments.join(' '));
+        if (!videoLink) return await client.reply(from, '_⚠️ Pastikan video yang anda inginkan dibawah 5 menit!_', id);
         try {
           ytwait = true;
 
-          if (musicLink.result.error == true){
-            await client.reply(from, `⚠️ Error !\nPastikan video yang anda inginkan dibawah 5 menit!\n\nMessage error : \n${musicLink.result.message}`, id);
+          if (videoLink.result.error == true){
+            await client.reply(from, `⚠️ Error !\nPastikan video yang anda inginkan dibawah 5 menit!\n\nMessage error : \n${videoLink.result.message}`, id);
           } else {
-            const mp4url = musicLink.result.file;
-            const judul = musicLink.result.title;
-            const durasi = musicLink.result.duration;
-            const thumb = musicLink.thumbnail;
+            const mp4url = videoLink.result.file;
+            const judul = videoLink.result.title;
+            const durasi = videoLink.result.duration;
+            const thumb = videoLink.thumbnail;
 
             var menit = Math.floor(durasi / 60);
             var detik = durasi - menit * 60;
