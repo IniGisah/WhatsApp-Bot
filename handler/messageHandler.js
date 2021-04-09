@@ -740,11 +740,11 @@ module.exports = async (client, message) => {
       case 'music':
         await client.reply(from, "Fitur ini memerlukan resource yang berat, dimohon untuk tidak menspam command ini", id);
         if (arguments.length < 1) return await client.reply(from, `_⚠️ Contoh Penggunaan Perintah : ${botPrefix}music <title> / <url>_`, id);
-        //if (ytwait == true) return await client.reply(from, '_⚠️ Mohon menunggu command music sebelumnya selesai diupload terlebih dahulu_', id);
+        if (ytwait == true) return await client.reply(from, '_⚠️ Mohon menunggu command music sebelumnya selesai diupload terlebih dahulu_', id);
         const musicLink = await _function.youtube.youtubeMusic(arguments.join(' '));
         if (!musicLink) return await client.reply(from, '_⚠️ Pastikan music yang anda inginkan dibawah 5 menit!_', id);
         try {
-          //ytwait = true;
+          ytwait = true;
 
           if (musicLink.result.error == true){
             await client.reply(from, `⚠️ Error !\nPastikan music yang anda inginkan dibawah 5 menit!\n\nMessage error : \n${musicLink.result.message}`, id);
@@ -761,13 +761,49 @@ module.exports = async (client, message) => {
 
             await client.sendImage(from, thumb, "thumb.jpg", caption, id)
             await client.sendFileFromUrl(from, mp3url, "mp3yt.mp3", judul, id, null, null, true);
-            //ytwait = false;
+            ytwait = false;
           }
         } catch (error) {
           await client.reply(from, "Sepertinya musik tidak bisa di upload, mon maap 🙏\n\nSilahkan cari musik lainnya", id);
           //console.log("music download error " + musicLink);
           console.log(error.stack);
+          ytwait = false;
         }
+        ytwait = false;
+        break;
+
+      case 'ytmp4':
+        await client.reply(from, "Fitur ini memerlukan resource yang berat, dimohon untuk tidak menspam command ini", id);
+        if (arguments.length < 1) return await client.reply(from, `_⚠️ Contoh Penggunaan Perintah : ${botPrefix}ytmp4 <title> / <url>_`, id);
+        if (ytwait == true) return await client.reply(from, '_⚠️ Mohon menunggu command music/video sebelumnya selesai diupload terlebih dahulu_', id);
+        const musicLink = await _function.youtube.youtubeVideo(arguments.join(' '));
+        if (!musicLink) return await client.reply(from, '_⚠️ Pastikan video yang anda inginkan dibawah 5 menit!_', id);
+        try {
+          ytwait = true;
+
+          if (musicLink.result.error == true){
+            await client.reply(from, `⚠️ Error !\nPastikan video yang anda inginkan dibawah 5 menit!\n\nMessage error : \n${musicLink.result.message}`, id);
+          } else {
+            const mp4url = musicLink.result.file;
+            const judul = musicLink.result.title;
+            const durasi = musicLink.result.duration;
+            const thumb = musicLink.thumbnail;
+
+            var menit = Math.floor(durasi / 60);
+            var detik = durasi - menit * 60;
+            const caption = `-------[*Detail Video*]-------\n\nJudul : ${judul}\nDurasi : ${menit} menit ${detik} detik`
+
+            await client.sendImage(from, thumb, "thumb.jpg", caption, id)
+            await client.sendFileFromUrl(from, mp4url, "vid.mp4", judul, id);
+            ytwait = false;
+          }
+        } catch (error) {
+          await client.reply(from, "Sepertinya musik tidak bisa di upload, mon maap 🙏\n\nSilahkan cari video lainnya", id);
+          //console.log("music download error " + musicLink);
+          console.log(error.stack);
+          ytwait = false;
+        }
+        ytwait = false;
         break;
 
       case 'lyrics':
@@ -1594,9 +1630,6 @@ Usage: *${botPrefix}reminder* 10s | pesan_pengingat
         var mode,cat;
         const random = Math.floor(Math.random() * categories.length);
         const randomnsfw = Math.floor(Math.random() * categoriesnsfw.length);
-        //if (arguments.length !== 2) return await client.reply(from, ind.waifu(), id)
-        //if (!modes.includes(arguments[0])) return client.sendText(from, `Maaf, mode pencarian yang anda pilih tidak ada, mohon cek ${prefix}waifu untuk bantuan`)
-        //if (!categories.includes(arguments[1])) return client.sendText(from, `Maaf, kategori pencarian yang anda pilih tidak ada, mohon cek ${prefix}waifu untuk bantuan`)
         if (modes.includes(arguments[0]) && categories.includes(arguments[1])) {client.reply(from, ind.wait() + `\n\n_Mendapatkan gambar ${arguments[0]} dengan kategori ${arguments[1]}..._`, id)}
         if (arguments[0] === 'nsfw'){ var i = true } else { var i = false }
         if (arguments.length == 0){ 

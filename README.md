@@ -180,6 +180,7 @@ _Default prefix :_ #
 |     !resi      |     OK      |             Get a your package info       |
 |     !reminder  |     OK      |             Send a reminder for you       |
 |     !music     |     OK      |             Get music from given title or youtube link via Voice from Youtube              | 
+|     !ytmp4     |     OK      |     Get video from youtube               |
 |     !infohoax  |     OK      |     Get newest infohoax page             |
 |     !ping      |     OK      |     Check bot ping                       |
 |     !profil    |     OK      |     See your profile                     |
