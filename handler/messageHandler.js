@@ -746,8 +746,8 @@ module.exports = async (client, message) => {
         try {
           //ytwait = true;
 
-          if (musicLink.error == true){
-            await client.reply(from, `⚠️ Error !\nPastikan music yang anda inginkan dibawah 5 menit!\n\nMessage error : \n${musicLink.message}`, id);
+          if (musicLink.result.error == true){
+            await client.reply(from, `⚠️ Error !\nPastikan music yang anda inginkan dibawah 5 menit!\n\nMessage error : \n${musicLink.result.message}`, id);
           } else {
             const mp3url = musicLink.result.file;
             const judul = musicLink.result.title;
