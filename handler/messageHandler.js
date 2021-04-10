@@ -747,13 +747,30 @@ module.exports = async (client, message) => {
           ytwait = true;
 
           if (musicLink.result.error == true){
-            await client.reply(from, `⚠️ Error !\nPastikan music yang anda inginkan dibawah 5 menit!\n\nMessage error : \n${musicLink.result.message}`, id);
+            console.log("Music high quality error, change to medium quality")
+            const musicLink2 = await _function.youtube.youtubeMusic2(arguments.join(' '));
+            if (musicLink2.result.status !== 200) return await client.reply(from, `⚠️ Error ! \n\nMessage error : \n${musicLink2.result.result}`,id)
+            await client.reply(from, ind.wait() + "\nMusik sedang diupload...", id)
+            const mp3url = musicLink2.result.result;
+            const judul = musicLink2.result.title;
+            const thumb = musicLink2.thumbnail;
+            const durasi = musicLink.duration;
+
+            var menit = Math.floor(durasi / 60);
+            var detik = durasi - menit * 60;
+
+            const caption = `-------[*Detail musik*]-------\n\nJudul : ${judul}\nDurasi : ${menit} menit ${detik} detik`
+            await client.sendImage(from, thumb, "thumb.jpg", caption, id)
+            await client.sendFileFromUrl(from, mp3url, "mp3yt.mp3", judul, id, null, null, true);
+            ytwait = false;
+            //await client.reply(from, `⚠️ Error !\nPastikan music yang anda inginkan dibawah 5 menit!\n\nMessage error : \n${musicLink.result.message}`, id);
+
           } else {
-            await client.reply(from, ind.wait(), id)
+            await client.reply(from, ind.wait() + "\nMusik sedang diupload...", id)
             const mp3url = musicLink.result.file;
             const judul = musicLink.result.title;
             const altjudul = musicLink.result.alt_title;
-            const durasi = musicLink.result.duration;
+            const durasi = musicLink.duration;
             const thumb = musicLink.thumbnail;
 
             var menit = Math.floor(durasi / 60);
@@ -782,17 +799,18 @@ module.exports = async (client, message) => {
         try {
           ytwait = true;
 
-          if (videoLink.result.error == true){
-            await client.reply(from, `⚠️ Error !\nPastikan video yang anda inginkan dibawah 5 menit!\n\nMessage error : \n${videoLink.result.message}`, id);
+          if (videoLink.result.status !== 200){
+            await client.reply(from, `⚠️ Error ! \n\nMessage error : \n${musicLink2.result.result}`, id);
           } else {
-            await client.reply(from, ind.wait(), id)
-            const mp4url = videoLink.result.file;
+            await client.reply(from, ind.wait()+ "\nVideo sedang diupload...", id)
+            const mp4url = videoLink.result.result;
             const judul = videoLink.result.title;
-            const durasi = videoLink.result.duration;
             const thumb = videoLink.thumbnail;
+            const durasi = musicLink.duration;
 
             var menit = Math.floor(durasi / 60);
             var detik = durasi - menit * 60;
+
             const caption = `-------[*Detail Video*]-------\n\nJudul : ${judul}\nDurasi : ${menit} menit ${detik} detik`
 
             await client.sendImage(from, thumb, "thumb.jpg", caption, id)
@@ -1119,6 +1137,10 @@ Dito @6285155277438⁩`
         await client.sendFile(from, './mediapreload/failed.mp3', "halo.mp3", "Haloo", null, null, true);
         break;
 
+      case 'demituhan':
+        await client.sendFile(from, './mediapreload/demituhan.mp3', "halo.mp3", "Haloo", null, null, true);
+        break;
+
       case 'resi':
         if (arguments.length !== 2) return client.reply(from, `Maaf, format pesan salah.\nSilahkan ketik pesan dengan ${botPrefix}resi <kurir> <no_resi>\n\nKurir yang tersedia:\njne, pos, tiki, wahana, jnt, rpx, sap, sicepat, pcp, jet, dse, first, ninja, lion, idl, rex`, id);
         const kurirs = ['jne', 'pos', 'tiki', 'wahana', 'jnt', 'rpx', 'sap', 'sicepat', 'pcp', 'jet', 'dse', 'first', 'ninja', 'lion', 'idl', 'rex'];
@@ -1201,7 +1223,6 @@ Dito @6285155277438⁩`
           }
           if (daftarlist.length === 0 && judullist.length === 0) return client.reply(from, `List sudah di reset !`, id);
           break;
-/*
 
       case 'alkitab':
         if (arguments.length === 0) return client.reply(from, `Mengirim detail ayat al-kitab dari pencarian \n\nContoh : ${botPrefix}alkitab <pencarian>`, id);
@@ -1216,7 +1237,7 @@ Dito @6285155277438⁩`
                 console.log('Success sending Al-Kitab!')
             })
         break
-*/
+
       case 'kbbi':
         if (arguments.length === 0) return client.reply(from, `Mengirim detail arti kbbi dari pencarian \n\nContoh : ${botPrefix}kbbi <pencarian>`, id);
         await client.reply(from, ind.wait(), id)
@@ -1343,7 +1364,7 @@ Usage: *${botPrefix}reminder* 10s | pesan_pengingat
 
         case 'nulishd':                
           if (arguments.length == 0) return client.reply(from, `Membuat bot menulis teks yang dikirim menjadi gambar\nPemakaian: ${prefix}nulishd [teks]\n\ncontoh: ${prefix}nulis i love you 3000`, id)
-          const nulisp = await _function.rugaapi.tulis(q)
+          const nulisp = await _function.tulis(q)
           await client.sendImage(from, `${nulisp}`, '', 'Nih ...', id)
           .catch(() => {
               client.reply(from, 'Ada yang Error!', id)
@@ -1551,6 +1572,7 @@ Usage: *${botPrefix}reminder* 10s | pesan_pengingat
           })
         break
       
+      case 'wait':
       case 'traceanime':
         if (!isImage && !isQuotedImage) return await client.reply(from, `_⚠️ Contoh Penggunaan Perintah : kirim atau reply sebuah gambar screenshot yang ingin dicari sumber anime nya lalu berikan caption ${botPrefix}wait_`, id);
         if (isMedia && isImage || isQuotedImage){
@@ -1595,7 +1617,7 @@ Usage: *${botPrefix}reminder* 10s | pesan_pengingat
         break
 
       case 'sauce':
-        if (!mimetype) return await client.reply(from, `_⚠️ Contoh Penggunaan Perintah : kirim sebuah gambar artwork yang ingin dicari sumber link nya lalu berikan caption ${botPrefix}sauce_`, id);
+        if (!isImage && !isQuotedImage) return await client.reply(from, `_⚠️ Contoh Penggunaan Perintah : kirim sebuah gambar artwork yang ingin dicari sumber link nya lalu berikan caption ${botPrefix}sauce_`, id);
         if (isMedia && isImage || isQuotedImage) {
           await client.reply(from, ind.wait(), id)
           const encryptMedia = isQuotedImage ? quotedMsg : message
@@ -1607,15 +1629,15 @@ Usage: *${botPrefix}reminder* 10s | pesan_pengingat
               const results = await saus(imageLink)
               let teks = ''
               for (let i = 0; i < results.length; i++) {
-                  if (results[i].similarity < 80.00) {
+                  if (results[i].similarity < 50.00) {
                       console.log('Low similiarity results')
                       teks = 'Low similarity. 🤔\n\n'
                   } else {
-                      teks += `*Link*: ${results[i].url}\n*Site*: ${results[i].site}\n*Author name*: ${results[i].authorName}\n*Author link*: ${results[i].authorUrl}\n*Similarity*: ${results[i].similarity}%`
-                      await client.sendLinkWithAutoPreview(from, results[i].url, teks)
-                          .then(() => console.log('Source found!'))
+                      teks += `*Link*: ${results[i].url}\n*Site*: ${results[i].site}\n*Author name*: ${results[i].authorName}\n*Author link*: ${results[i].authorUrl}\n*Similarity*: ${results[i].similarity}%\n\n`
                   }
               }
+              await client.reply(from, teks, id)
+                    .then(() => console.log('Source sent!'))
           } catch (err) {
               console.error(err)
               await client.reply(from, 'Error!', id)
