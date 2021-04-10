@@ -800,13 +800,13 @@ module.exports = async (client, message) => {
           ytwait = true;
 
           if (videoLink.result.status !== 200){
-            await client.reply(from, `⚠️ Error ! \n\nMessage error : \n${musicLink2.result.result}`, id);
+            await client.reply(from, `⚠️ Error ! \n\nMessage error : \n${videoLink.result.result}`, id);
           } else {
             await client.reply(from, ind.wait()+ "\nVideo sedang diupload...", id)
             const mp4url = videoLink.result.result;
             const judul = videoLink.result.title;
             const thumb = videoLink.thumbnail;
-            const durasi = musicLink.duration;
+            const durasi = videoLink.duration;
 
             var menit = Math.floor(durasi / 60);
             var detik = durasi - menit * 60;
